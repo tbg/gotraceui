@@ -1622,28 +1622,36 @@ func loadTrace(f io.Reader, p progresser, cv *Canvas) (loadTraceResult, error) {
 		},
 	)
 
+	isDisabled := func(envVar string) bool {
+		v := os.Getenv(envVar)
+		return v == "0" || v == "false"
+	}
+
 	gg := Plot{
 		Name: "Goroutine count",
 		Unit: "goroutines",
 	}
 	gg.AddSeries(
 		PlotSeries{
-			Name:   "Runnable",
-			Metric: pt.Metrics["/gotraceui/sched/goroutines/runnable:goroutines"],
-			Style:  PlotStaircase,
-			Color:  colors[colorStateReady],
+			Name:     "Runnable",
+			Metric:   pt.Metrics["/gotraceui/sched/goroutines/runnable:goroutines"],
+			Style:    PlotStaircase,
+			Color:    colors[colorStateReady],
+			disabled: isDisabled("GOTRACEUI_GOROUTINE_RUNNABLE"),
 		},
 		PlotSeries{
-			Name:   "Running",
-			Metric: pt.Metrics["/gotraceui/sched/goroutines/running:goroutines"],
-			Style:  PlotStaircase,
-			Color:  colors[colorStateActive],
+			Name:     "Running",
+			Metric:   pt.Metrics["/gotraceui/sched/goroutines/running:goroutines"],
+			Style:    PlotStaircase,
+			Color:    colors[colorStateActive],
+			disabled: isDisabled("GOTRACEUI_GOROUTINE_RUNNING"),
 		},
 		PlotSeries{
-			Name:   "Waiting",
-			Metric: pt.Metrics["/gotraceui/sched/goroutines/waiting:goroutines"],
-			Style:  PlotStaircase,
-			Color:  colors[colorStateBlocked],
+			Name:     "Waiting",
+			Metric:   pt.Metrics["/gotraceui/sched/goroutines/waiting:goroutines"],
+			Style:    PlotStaircase,
+			Color:    colors[colorStateBlocked],
+			disabled: isDisabled("GOTRACEUI_GOROUTINE_WAITING"),
 		},
 	)
 
