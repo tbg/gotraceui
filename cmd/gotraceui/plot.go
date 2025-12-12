@@ -90,9 +90,11 @@ func (pl *Plot) AddSeries(series ...PlotSeries) {
 		if len(points.Timestamps) == 0 {
 			continue
 		}
-		nsPerPx := float64(points.Timestamps[len(points.Timestamps)-1]) / float64(zoom1Pixels)
+		// Calculate bins based on the actual trace duration, not absolute timestamps
+		duration := float64(points.Timestamps[len(points.Timestamps)-1] - points.Timestamps[0])
+		nsPerPx := duration / float64(zoom1Pixels)
 		// TODO make pixel count proportional to length of trace (or number of samples?)
-		indices := downsample(points, 0, zoom1Pixels, nsPerPx, nil)
+		indices := downsample(points, points.Timestamps[0], zoom1Pixels, nsPerPx, nil)
 		decimation := ptrace.Metric{
 			Timestamps: make([]exptrace.Time, len(indices)),
 			Values:     make([]uint64, len(indices)),
