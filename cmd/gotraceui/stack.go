@@ -7,8 +7,8 @@ import (
 	rtrace "runtime/trace"
 	"strings"
 
-	"honnef.co/go/gotraceui/mem"
-	"honnef.co/go/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/mem"
+	"github.com/tbg/gotraceui/trace/ptrace"
 	"honnef.co/go/stuff/syncutil"
 
 	exptrace "golang.org/x/exp/trace"

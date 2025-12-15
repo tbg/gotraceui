@@ -10,12 +10,12 @@ import (
 	rtrace "runtime/trace"
 	"time"
 
-	"honnef.co/go/gotraceui/clip"
-	"honnef.co/go/gotraceui/gesture"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/mem"
-	"honnef.co/go/gotraceui/theme"
-	"honnef.co/go/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/clip"
+	"github.com/tbg/gotraceui/gesture"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/mem"
+	"github.com/tbg/gotraceui/theme"
+	"github.com/tbg/gotraceui/trace/ptrace"
 
 	"gioui.org/io/key"
 	"gioui.org/io/pointer"

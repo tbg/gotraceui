@@ -7,10 +7,10 @@ import (
 	"slices"
 	"strings"
 
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/gesture"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/gesture"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/font"
 	"gioui.org/io/key"

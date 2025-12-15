@@ -1,7 +1,7 @@
 package main
 
 import (
-	"honnef.co/go/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/trace/ptrace"
 
 	exptrace "golang.org/x/exp/trace"
 )

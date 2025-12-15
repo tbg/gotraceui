@@ -8,10 +8,10 @@ import (
 	rtrace "runtime/trace"
 	"time"
 
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/theme"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/theme"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/app"
 	"gioui.org/f32"

@@ -2,7 +2,7 @@
 
 package f32color
 
-import "honnef.co/go/gotraceui/color"
+import "github.com/tbg/gotraceui/color"
 
 // MulAlpha applies the alpha to the color.
 func MulAlpha(c color.Oklch, alpha float32) color.Oklch {

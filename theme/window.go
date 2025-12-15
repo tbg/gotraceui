@@ -12,10 +12,10 @@ import (
 	"time"
 	"unsafe"
 
-	"honnef.co/go/gotraceui/color"
-	myfont "honnef.co/go/gotraceui/font"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/color"
+	myfont "github.com/tbg/gotraceui/font"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/widget"
 	"honnef.co/go/stuff/container/tinylfu"
 
 	"gioui.org/app"

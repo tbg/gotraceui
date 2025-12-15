@@ -4,11 +4,11 @@ import (
 	"context"
 	rtrace "runtime/trace"
 
-	"honnef.co/go/gotraceui/clip"
-	ourfont "honnef.co/go/gotraceui/font"
-	"honnef.co/go/gotraceui/gesture"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/theme"
+	"github.com/tbg/gotraceui/clip"
+	ourfont "github.com/tbg/gotraceui/font"
+	"github.com/tbg/gotraceui/gesture"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/theme"
 
 	"gioui.org/font"
 	"gioui.org/io/pointer"

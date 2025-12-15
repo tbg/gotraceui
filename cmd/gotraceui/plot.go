@@ -12,12 +12,12 @@ import (
 	"time"
 
 	"honnef.co/go/curve"
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/gesture"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/mem"
-	"honnef.co/go/gotraceui/theme"
-	"honnef.co/go/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/gesture"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/mem"
+	"github.com/tbg/gotraceui/theme"
+	"github.com/tbg/gotraceui/trace/ptrace"
 	"honnef.co/go/stuff/math/mathutil"
 
 	"gioui.org/f32"

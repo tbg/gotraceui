@@ -4,8 +4,8 @@ import (
 	"context"
 	rtrace "runtime/trace"
 
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/layout"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/layout"
 
 	"gioui.org/io/key"
 	"gioui.org/io/pointer"

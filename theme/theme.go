@@ -9,9 +9,9 @@ import (
 	"slices"
 	"strings"
 
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/widget"
 	"honnef.co/go/stuff/math/mathutil"
 
 	"gioui.org/f32"

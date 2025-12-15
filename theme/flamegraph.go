@@ -10,12 +10,12 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"honnef.co/go/gotraceui/clip"
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/gesture"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/mem"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/clip"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/gesture"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/mem"
+	"github.com/tbg/gotraceui/widget"
 	"honnef.co/go/stuff/math/mathutil"
 	"honnef.co/go/stuff/sliceutil"
 

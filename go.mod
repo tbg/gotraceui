@@ -1,4 +1,4 @@
-module honnef.co/go/gotraceui
+module github.com/tbg/gotraceui
 
 go 1.24.0
 

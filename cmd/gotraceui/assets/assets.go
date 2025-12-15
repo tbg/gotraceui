@@ -13,7 +13,7 @@ import (
 	"math"
 	"sync"
 
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/layout"
 	"gioui.org/op/paint"

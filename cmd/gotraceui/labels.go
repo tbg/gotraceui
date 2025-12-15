@@ -1,6 +1,6 @@
 package main
 
-import "honnef.co/go/gotraceui/trace/ptrace"
+import "github.com/tbg/gotraceui/trace/ptrace"
 
 // Mapping from states to span labels
 var spanStateLabels = [...][]string{

@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"honnef.co/go/gotraceui/mem"
+	"github.com/tbg/gotraceui/mem"
 	"honnef.co/go/stuff/container/maybe"
 
 	exptrace "golang.org/x/exp/trace"

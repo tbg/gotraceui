@@ -3,7 +3,7 @@ package theme
 import (
 	"strconv"
 
-	"honnef.co/go/gotraceui/layout"
+	"github.com/tbg/gotraceui/layout"
 )
 
 // ComponentState describes a component's current state or desired state.

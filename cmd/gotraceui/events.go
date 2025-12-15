@@ -7,11 +7,11 @@ import (
 	rtrace "runtime/trace"
 	"sort"
 
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/mem"
-	"honnef.co/go/gotraceui/theme"
-	"honnef.co/go/gotraceui/trace/ptrace"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/mem"
+	"github.com/tbg/gotraceui/theme"
+	"github.com/tbg/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/op/clip"
 	"gioui.org/text"

@@ -8,8 +8,8 @@ import (
 	"math"
 	rtrace "runtime/trace"
 
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/op"
 	"gioui.org/op/clip"

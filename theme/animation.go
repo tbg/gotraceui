@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"honnef.co/go/gotraceui/layout"
+	"github.com/tbg/gotraceui/layout"
 	"honnef.co/go/stuff/math/mathutil"
 
 	"gioui.org/op"

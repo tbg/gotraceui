@@ -1,8 +1,8 @@
 package main
 
 import (
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/trace/ptrace"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/trace/ptrace"
 )
 
 const (

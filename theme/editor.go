@@ -6,10 +6,10 @@ import (
 	"context"
 	rtrace "runtime/trace"
 
-	"honnef.co/go/gotraceui/color"
-	"honnef.co/go/gotraceui/f32color"
-	"honnef.co/go/gotraceui/layout"
-	"honnef.co/go/gotraceui/widget"
+	"github.com/tbg/gotraceui/color"
+	"github.com/tbg/gotraceui/f32color"
+	"github.com/tbg/gotraceui/layout"
+	"github.com/tbg/gotraceui/widget"
 
 	"gioui.org/font"
 	"gioui.org/op"

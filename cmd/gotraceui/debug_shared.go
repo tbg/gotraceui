@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"honnef.co/go/gotraceui/color"
+	"github.com/tbg/gotraceui/color"
 )
 
 var (
