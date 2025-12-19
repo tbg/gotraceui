@@ -374,7 +374,6 @@ func NewMainWindow() *MainWindow {
 // window when it's done. OpenTrace should be called from a different goroutine than the render loop.
 func (mwin *MainWindow) OpenTrace(r io.Reader) {
 	mwin.SetState("loadingTrace")
-
 	res, err := loadTrace(r, mwin, &mwin.canvas)
 	if memprofileLoad != "" {
 		writeMemprofile(memprofileLoad)
@@ -390,6 +389,13 @@ func (mwin *MainWindow) OpenTrace(r io.Reader) {
 	if err != nil {
 		mwin.SetError(fmt.Errorf("couldn't load trace: %w", err))
 		return
+	}
+
+	// Try to extract file last modified time.
+	if f, ok := r.(*os.File); ok {
+		if info, err := f.Stat(); err == nil {
+			res.trace.FileLastModTime = info.ModTime()
+		}
 	}
 
 	mwin.LoadTrace(res)
@@ -1119,6 +1125,18 @@ func (mwin *MainWindow) showFileOpenDialog() {
 	}
 }
 
+func (mwin *MainWindow) displayTraceTimesOnTitle(res *loadTraceResult) {
+	duration := res.trace.Duration()
+	endTime := res.trace.FileLastModTime
+	startTime := endTime.Add(-duration)
+
+	title := fmt.Sprintf("gotraceui - Start: %s | End: %s | Duration: %s",
+		startTime.Format("2006-01-02 15:04:05"),
+		endTime.Format("2006-01-02 15:04:05"),
+		duration)
+	mwin.win.Option(app.Title(title))
+}
+
 func (mwin *MainWindow) loadTraceImpl(res loadTraceResult) {
 	NewCanvasInto(&mwin.canvas, mwin.debugWindow, res.trace)
 	mwin.canvas.memoryGraph = res.plot
@@ -1143,6 +1161,11 @@ func (mwin *MainWindow) loadTraceImpl(res loadTraceResult) {
 		Component:  NewTasksComponent(mwin.trace.Tasks, res.trace),
 		Unclosable: true,
 	})
+
+	// Update window title with trace timing information.
+	if !res.trace.FileLastModTime.IsZero() {
+		mwin.displayTraceTimesOnTitle(&res)
+	}
 }
 
 type durationNumberFormat uint8

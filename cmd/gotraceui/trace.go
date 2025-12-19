@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/tbg/gotraceui/trace/ptrace"
-
 	exptrace "golang.org/x/exp/trace"
+	"time"
 )
 
 type Trace struct {
@@ -11,6 +11,9 @@ type Trace struct {
 
 	// The offset to apply to all timestamps from the trace.
 	TimeOffset exptrace.Time
+
+	// The trace last modified time to get the wall clock trace end time.
+	FileLastModTime time.Time
 
 	GOROOT string
 	GOPATH string
