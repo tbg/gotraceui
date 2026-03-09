@@ -16,9 +16,8 @@ import (
 	"time"
 
 	"github.com/tbg/gotraceui/mem"
-	"honnef.co/go/stuff/container/maybe"
-
 	exptrace "golang.org/x/exp/trace"
+	"honnef.co/go/stuff/container/maybe"
 )
 
 type SchedulingState uint8
@@ -1114,6 +1113,21 @@ func postProcessSpans(tr *Trace, progress func(float64)) {
 			fixEnds(u)
 		}
 	}
+
+	for _, g := range tr.Goroutines {
+		for name, ranges := range g.Ranges {
+			var state SchedulingState
+			switch name {
+			case "GC mark assist":
+				state = StateGCMarkAssist
+			case "GC incremental sweep":
+				state = StateGCSweep
+			default:
+				continue
+			}
+			g.Spans = spliceRanges(g.Spans, ranges, state)
+		}
+	}
 	for _, p := range tr.Processors {
 		fixEnds(p.Spans)
 		for _, ranges := range p.Ranges {
@@ -1303,4 +1317,98 @@ func IsGoroutineUnblock(trans *exptrace.StateTransition) bool {
 	}
 	from, to := trans.Goroutine()
 	return from == exptrace.GoWaiting && to == exptrace.GoRunnable
+}
+
+func spliceRanges(spans []Span, ranges []Span, state SchedulingState) []Span {
+	if len(ranges) == 0 {
+		return spans
+	}
+
+	// Pre-allocate with some extra capacity for the splits
+	out := make([]Span, 0, len(spans)+len(ranges)*2)
+	ri := 0
+
+	for si := 0; si < len(spans); si++ {
+		s := spans[si]
+
+		// If no more ranges or current span ends before current range starts, emit as-is
+		if ri >= len(ranges) || s.End <= ranges[ri].Start {
+			out = append(out, s)
+			continue
+		}
+
+		// Only splice into StateActive spans
+		if s.State != StateActive {
+			out = append(out, s)
+			continue
+		}
+
+		// Process all ranges that overlap with this span
+		pos := s.Start
+		for ri < len(ranges) && ranges[ri].Start < s.End {
+			r := ranges[ri]
+			rStart := r.Start
+			rEnd := r.End
+
+			// Clamp range start to span start
+			if rStart < pos {
+				rStart = pos
+			}
+			// Clamp range end to span end
+			clampedEnd := rEnd
+			if clampedEnd > s.End {
+				clampedEnd = s.End
+			}
+
+			// Emit prefix (original state) if non-zero length
+			if rStart > pos {
+				out = append(out, Span{
+					Start:      pos,
+					End:        rStart,
+					StartEvent: s.StartEvent,
+					EndEvent:   s.EndEvent,
+					At:         s.At,
+					State:      s.State,
+					Tags:       s.Tags,
+					Kind:       s.Kind,
+				})
+			}
+
+			// Emit middle (GC state)
+			out = append(out, Span{
+				Start:      rStart,
+				End:        clampedEnd,
+				StartEvent: r.StartEvent,
+				EndEvent:   r.EndEvent,
+				At:         s.At,
+				State:      state,
+				Tags:       s.Tags,
+				Kind:       SpanKindCustom,
+			})
+
+			pos = clampedEnd
+
+			// If range extends beyond this span, don't advance ri — continue with next span
+			if rEnd > s.End {
+				break
+			}
+			ri++
+		}
+
+		// Emit suffix if there's remaining span after the last range
+		if pos < s.End {
+			out = append(out, Span{
+				Start:      pos,
+				End:        s.End,
+				StartEvent: s.StartEvent,
+				EndEvent:   s.EndEvent,
+				At:         s.At,
+				State:      s.State,
+				Tags:       s.Tags,
+				Kind:       s.Kind,
+			})
+		}
+	}
+
+	return out
 }
