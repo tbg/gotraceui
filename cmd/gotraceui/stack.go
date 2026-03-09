@@ -9,9 +9,8 @@ import (
 
 	"github.com/tbg/gotraceui/mem"
 	"github.com/tbg/gotraceui/trace/ptrace"
-	"honnef.co/go/stuff/syncutil"
-
 	exptrace "golang.org/x/exp/trace"
+	"honnef.co/go/stuff/syncutil"
 )
 
 func computeStackTrack(track *Track, cancelled <-chan struct{}) Items[ptrace.Span] {
@@ -214,6 +213,8 @@ func (it *samplesAndSpansIterator) next(advance bool) (out idAndMaybeSpan, ok bo
 			}
 			return
 		case exptrace.EventStackSample:
+			return
+		case exptrace.EventRangeBegin, exptrace.EventRangeActive:
 			return
 		default:
 			panic(fmt.Sprintf("unhandled kind %s", ev.Kind()))
