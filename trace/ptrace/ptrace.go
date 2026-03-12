@@ -891,42 +891,7 @@ func processEvents(r *exptrace.Reader, tr *Trace, progress func(float64)) error 
 				case exptrace.GoSyscall:
 					s.State = StateBlockedSyscall
 				case exptrace.GoWaiting:
-					switch trans.Reason {
-					case "chan send":
-						s.State = StateBlockedSend
-					case "chan receive":
-						s.State = StateBlockedRecv
-					case "network":
-						s.State = StateBlockedNet
-					case "runtime.GoSched", "runtime.Gosched":
-						s.State = StateInactive
-					case "select":
-						s.State = StateBlockedSelect
-					case "sleep":
-						s.State = StateInactive
-					case "sync":
-						s.State = StateBlockedSync
-					case "sync.(*Cond).Wait":
-						s.State = StateBlockedCond
-					case "system goroutine wait":
-						s.State = StateInactive
-					case "GC mark assist wait for work":
-						s.State = StateInactive
-					case "GC background sweeper wait":
-						s.State = StateInactive
-					case "preempted":
-						s.State = StateWaitingPreempted
-					case "forever":
-						s.State = StateStuck
-					case "wait for debug call":
-						s.State = StateBlocked
-					case "wait until GC ends":
-						s.State = StateBlockedGC
-					case "":
-						s.State = StateBlocked
-					default:
-						log.Printf("unhandled reason %q", trans.Reason)
-					}
+					s.State = stateForGoWaitingReason(trans.Reason)
 				default:
 					panic(fmt.Sprintf("unhandled state %s", to))
 				}
@@ -1427,5 +1392,45 @@ func isBlockedState(state SchedulingState) bool {
 		return true
 	default:
 		return false
+	}
+}
+
+func stateForGoWaitingReason(reason string) SchedulingState {
+	switch reason {
+	case "chan send":
+		return StateBlockedSend
+	case "chan receive":
+		return StateBlockedRecv
+	case "network":
+		return StateBlockedNet
+	case "runtime.GoSched", "runtime.Gosched":
+		return StateInactive
+	case "select":
+		return StateBlockedSelect
+	case "sleep":
+		return StateInactive
+	case "sync":
+		return StateBlockedSync
+	case "sync.(*Cond).Wait":
+		return StateBlockedCond
+	case "system goroutine wait":
+		return StateInactive
+	case "GC mark assist wait for work":
+		return StateBlockedGC
+	case "GC background sweeper wait":
+		return StateInactive
+	case "preempted":
+		return StateWaitingPreempted
+	case "forever":
+		return StateStuck
+	case "wait for debug call":
+		return StateBlocked
+	case "wait until GC ends":
+		return StateBlockedGC
+	case "":
+		return StateBlocked
+	default:
+		log.Printf("unhandled reason %q", reason)
+		return StateBlocked
 	}
 }
