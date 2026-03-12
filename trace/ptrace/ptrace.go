@@ -1337,8 +1337,14 @@ func spliceRanges(spans []Span, ranges []Span, state SchedulingState) []Span {
 			continue
 		}
 
-		// Only splice into StateActive spans
+		// Only splice into StateActive spans. However, if a blocked span
+		// overlaps a GC range, reclassify it as StateBlockedGC so the UI
+		// shows "GC assist wait" instead of e.g. "sync".
 		if s.State != StateActive {
+			if ri < len(ranges) && isBlockedState(s.State) &&
+				s.Start < ranges[ri].End && s.End > ranges[ri].Start {
+				s.State = StateBlockedGC
+			}
 			out = append(out, s)
 			continue
 		}
@@ -1411,4 +1417,15 @@ func spliceRanges(spans []Span, ranges []Span, state SchedulingState) []Span {
 	}
 
 	return out
+}
+
+func isBlockedState(state SchedulingState) bool {
+	switch state {
+	case StateBlocked, StateBlockedSend, StateBlockedRecv, StateBlockedSelect,
+		StateBlockedSync, StateBlockedSyncOnce, StateBlockedSyncTriggeringGC,
+		StateBlockedCond, StateBlockedNet, StateBlockedGC, StateBlockedSyscall:
+		return true
+	default:
+		return false
+	}
 }
