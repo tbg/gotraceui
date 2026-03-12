@@ -17,7 +17,7 @@ func TestStateForGoWaitingReason(t *testing.T) {
 		{"sync", StateBlockedSync},
 		{"sync.(*Cond).Wait", StateBlockedCond},
 		{"system goroutine wait", StateInactive},
-		{"GC mark assist wait for work", StateInactive},
+		{"GC mark assist wait for work", StateBlockedGC},
 		{"GC background sweeper wait", StateInactive},
 		{"preempted", StateWaitingPreempted},
 		{"forever", StateStuck},

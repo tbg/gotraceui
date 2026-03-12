@@ -1416,7 +1416,7 @@ func stateForGoWaitingReason(reason string) SchedulingState {
 	case "system goroutine wait":
 		return StateInactive
 	case "GC mark assist wait for work":
-		return StateInactive
+		return StateBlockedGC
 	case "GC background sweeper wait":
 		return StateInactive
 	case "preempted":
