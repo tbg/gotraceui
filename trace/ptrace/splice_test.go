@@ -144,8 +144,8 @@ func TestSpliceRanges(t *testing.T) {
 				if result[1].State != StateGCMarkAssist || result[1].Start != 20 || result[1].End != 50 {
 					t.Errorf("result[1]: got start=%d end=%d state=%v", result[1].Start, result[1].End, result[1].State)
 				}
-				// [50,80) blocked (passed through)
-				if result[2].State != StateBlockedSend || result[2].Start != 50 || result[2].End != 80 {
+				// [50,80) blocked, reclassified to StateBlockedGC because it overlaps the range
+				if result[2].State != StateBlockedGC || result[2].Start != 50 || result[2].End != 80 {
 					t.Errorf("result[2]: got start=%d end=%d state=%v", result[2].Start, result[2].End, result[2].State)
 				}
 				// [80,120) GC mark assist (continues from range)
@@ -159,14 +159,14 @@ func TestSpliceRanges(t *testing.T) {
 			},
 		},
 		{
-			name:      "range overlapping non-active span (skipped)",
+			name:      "range overlapping blocked span reclassifies to BlockedGC",
 			spans:     []Span{blocked(0, 100)},
 			ranges:    []Span{rng(20, 60)},
 			state:     StateGCMarkAssist,
 			wantCount: 1,
 			check: func(t *testing.T, result []Span) {
-				if result[0].State != StateBlockedSend {
-					t.Errorf("expected original blocked state, got %v", result[0].State)
+				if result[0].State != StateBlockedGC {
+					t.Errorf("expected StateBlockedGC, got %v", result[0].State)
 				}
 			},
 		},
@@ -199,6 +199,27 @@ func TestSpliceRanges(t *testing.T) {
 				// [70,100) active
 				if result[4].State != StateActive || result[4].Start != 70 || result[4].End != 100 {
 					t.Errorf("result[4]: got %v", result[4])
+				}
+			},
+		},
+		{
+			name: "range overlapping non-blocked non-active span leaves it unchanged",
+			spans: []Span{
+				{
+					Start:      exptrace.Time(0),
+					End:        exptrace.Time(100),
+					StartEvent: 1,
+					EndEvent:   2,
+					State:      StateReady,
+					Kind:       SpanKindStateTransition,
+				},
+			},
+			ranges:    []Span{rng(20, 60)},
+			state:     StateGCMarkAssist,
+			wantCount: 1,
+			check: func(t *testing.T, result []Span) {
+				if result[0].State != StateReady {
+					t.Errorf("expected StateReady unchanged, got %v", result[0].State)
 				}
 			},
 		},
