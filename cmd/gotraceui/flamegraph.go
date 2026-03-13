@@ -3,10 +3,14 @@ package main
 import (
 	"fmt"
 	"hash/fnv"
+	"image"
 	"math"
 	"strings"
 	"time"
 
+	"gioui.org/font"
+	"gioui.org/op"
+	"gioui.org/unit"
 	"github.com/tbg/gotraceui/clip"
 	"github.com/tbg/gotraceui/color"
 	"github.com/tbg/gotraceui/layout"
@@ -37,7 +41,9 @@ func (tlc *FlameGraphComponent) WantsTransition(gtx layout.Context) theme.Compon
 	return theme.ComponentStateNone
 }
 
-func NewFlameGraphComponent(win *theme.Window, tr *ptrace.Trace, g *ptrace.Goroutine) *FlameGraphComponent {
+func NewFlameGraphComponent(
+	win *theme.Window, tr *ptrace.Trace, g *ptrace.Goroutine,
+) *FlameGraphComponent {
 	return &FlameGraphComponent{
 		g: g,
 		fg: theme.NewFuture(win, func(cancelled <-chan struct{}) *widget.FlameGraph {
@@ -62,7 +68,9 @@ func NewFlameGraphComponent(win *theme.Window, tr *ptrace.Trace, g *ptrace.Gorou
 				}
 			}
 			totalSamples := len(tr.CPUSamples)
-			sampleDuration = time.Duration(math.Round(float64(totalDuration) / float64(totalSamples)))
+			if totalSamples > 0 {
+				sampleDuration = time.Duration(math.Round(float64(totalDuration) / float64(totalSamples)))
+			}
 
 			var fg widget.FlameGraph
 			do := func(samples []ptrace.EventID) {
@@ -158,9 +166,28 @@ func (fgc *FlameGraphComponent) Layout(win *theme.Window, gtx layout.Context) la
 		// XXX
 		return layout.Dimensions{}
 	}
+	if fg.NoData {
+		return fgc.layoutNoData(win, gtx)
+	}
 	fgs := theme.FlameGraph(fg, &fgc.state)
 	fgs.Color = flameGraphColorFn
 	return fgs.Layout(win, gtx)
+}
+
+func (fgc *FlameGraphComponent) layoutNoData(
+	win *theme.Window, gtx layout.Context,
+) layout.Dimensions {
+	padding := gtx.Dp(unit.Dp(16))
+	defer op.Offset(image.Pt(padding, padding)).Push(gtx.Ops).Pop()
+	gtx.Constraints.Min = image.Point{}
+	gtx.Constraints.Max.X -= 2 * padding
+
+	msg := "No CPU profiling data available.\n\n" +
+		"The flame graph requires CPU profile samples, which are only present in the execution trace " +
+		"when CPU profiling is active (e.g. via runtime.SetCPUProfileRate or pprof.StartCPUProfile) " +
+		"while the trace is being recorded."
+	return widget.Label{}.Layout(gtx, win.Theme.Shaper, font.Font{}, win.Theme.TextSize,
+		msg, win.ColorMaterial(gtx, win.Theme.Palette.Foreground))
 }
 
 func flameGraphColorFn(level, idx int, f *widget.FlamegraphFrame, hovered bool) color.Oklch {
