@@ -7,6 +7,8 @@ import (
 
 type FlameGraph struct {
 	Samples []*FlamegraphFrame
+	// NoData is set by Compute when no samples were added.
+	NoData bool
 
 	// top-level frames indexed by name
 	samples map[string]*FlamegraphFrame
@@ -64,6 +66,7 @@ func (fg *FlameGraph) AddSample(sample FlamegraphSample, root string) {
 
 func (fg *FlameGraph) Compute() {
 	if len(fg.samples) == 0 {
+		fg.NoData = true
 		fg.Samples = []*FlamegraphFrame{
 			{
 				Name: "",
